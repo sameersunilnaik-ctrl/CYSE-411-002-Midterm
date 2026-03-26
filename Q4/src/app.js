@@ -3,9 +3,9 @@
 //  Employee Directory Application
 
 
-function loadSession() {
+function loadSession() try {
     const raw = sessionStorage.getItem("session");
-    const session = try JSON.parse(raw);          // No try/catch
+    const session =  JSON.parse(raw);          // No try/catch
     return session;                            // No field validation
 }
 
