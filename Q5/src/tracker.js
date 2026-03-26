@@ -20,11 +20,13 @@ let currentFilter = "all";
 //  it belongs to the accepted list.
 
 
-function loadDashboardState() {
+function loadDashboardState() try {
     const raw   = localStorage.getItem("dashboardState");
     const state = JSON.parse(raw);             // No try/catch
     currentFilter = state.filter;              // No enum validation
     applyFilter(currentFilter);
+} catch (error) {
+    return []
 }
 
 
@@ -54,11 +56,14 @@ function saveDashboardState() {
 //    crash the function with an unhandled rejection.
 
 
-async function fetchIncidents() {
-    const res  = fetch("/api/incidents");      // Missing await
-    const data = res.json();                   // Missing await; res is a Promise
+async function fetchIncidents() try {
+    const res  = await fetch("/api/incidents"); // Missing await
+    const data = await res.json();                   // Missing await; res is a Promise
     return data;
-}
+} 
+    catch (error) {
+        return [] 
+    }
 
 
 
@@ -73,12 +78,12 @@ async function fetchIncidents() {
 
 function renderIncidents(incidents) {
     const container = document.getElementById("incident-list");
-    container.innerHTML = "";                  // Clear previous results
+    container.textContent = "";                  // Clear previous results
 
     incidents.forEach(function (incident) {
         const item = document.createElement("li");
         // UNSAFE – directly inserts API response as HTML
-        item.innerHTML =
+        item.textContent =
             "<strong>" + incident.title + "</strong>" +
             " <span class='severity severity-" + incident.severity + "'>" +
             incident.severity + "</span>";
